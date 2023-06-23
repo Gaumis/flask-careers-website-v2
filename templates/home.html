@@ -12,19 +12,29 @@
         height:320px;
         max-height: 100%;
       }
+      .container-fluid{
+        color:black;
+      }
+      .custom-margin {
+        margin-top: 60px !important;
+      }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1 class="text-center mt-2 mb-0">Developers Careers</h1>
+    {% include 'nav.html' %}
+    <div class="container mt-5">
+      <h1 class="text-center mt-4 mb-0 custom-margin">Developers Careers</h1>
       <p class="lead text-center">Here you will mostly find job opening for python developers<p>
-      <img class="img-fluid" id="banner" src="https://flask-careers-website--gaumis.repl.co/static/banner.jpg" width=80%>
+      <img class="img-fluid" id="banner" src="/static/banner.jpg" width=80%>
       <h2 class="text-center mt-2 mb-4">About Developer Careers</h2>
-      <p class="lead">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet purus gravida quis blandit. Sodales ut eu sem integer vitae justo eget magna. Vivamus arcu felis bibendum ut tristique. Tristique nulla aliquet enim tortor at auctor urna nunc id. Amet cursus sit amet dictum sit amet justo. Feugiat nibh sed pulvinar proin gravida hendrerit. Nunc consequat interdum varius sit amet mattis vulputate enim. Magna fringilla urna porttitor rhoncus dolor. In nisl nisi scelerisque eu ultrices vitae auctor eu. Cursus risus at ultrices mi tempus imperdiet nulla malesuada pellentesque. A cras semper auctor neque vitae tempus quam. Sed augue lacus viverra vitae congue eu consequat ac. Molestie a iaculis at erat pellentesque adipiscing commodo elit at. Integer eget aliquet nibh praesent tristique magna sit amet purus. Sed augue lacus viverra vitae congue. Quis commodo odio aenean sed adipiscing. Sem nulla pharetra diam sit amet nisl suscipit adipiscing bibendum. Nibh sit amet commodo nulla.
-  
-  Quis commodo odio aenean sed adipiscing diam donec. Fames ac turpis egestas maecenas. Enim ut tellus elementum sagittis vitae et leo. Nisi est sit amet facilisis. Et malesuada fames ac turpis. Urna duis convallis convallis tellus id interdum velit laoreet. Nec ultrices dui sapien eget mi. Magna fringilla urna porttitor rhoncus dolor purus non enim. Magna ac placerat vestibulum lectus mauris ultrices. Enim blandit volutpat maecenas volutpat. Fusce id velit ut tortor pretium. Adipiscing commodo elit at imperdiet dui. Vel facilisis volutpat est velit egestas dui id. Massa enim nec dui nunc mattis enim ut. Auctor urna nunc id cursus metus aliquam eleifend mi. Laoreet non curabitur gravida arcu ac tortor dignissim convallis aenean. Enim ut sem viverra aliquet eget sit amet tellus cras. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin.
+      <div class="row mb-3">
+      <p class="lead col-md-6">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet purus gravida quis blandit. Sodales ut eu sem integer vitae justo eget magna. Vivamus arcu felis bibendum ut tristique. Tristique nulla aliquet enim tortor at auctor urna nunc id. Amet cursus sit amet dictum sit amet justo. Feugiat nibh sed pulvinar proin gravida hendrerit. Nunc consequat interdum varius sit amet mattis vulputate enim. Magna fringilla urna porttitor rhoncus dolor. In nisl nisi scelerisque eu ultrices vitae auctor eu. Cursus risus at ultrices mi tempus imperdiet nulla malesuada pellentesque. A cras semper auctor neque vitae tempus quam. 
       </p>
+      <div class="d-none d-md-block col-md-6 text-end">
+        <img src="/static/partion.jpg" class="img-fluid" style="border-radius:10px;max-height: 75%;">
+      </div>
+      </div>
       <h2 class="text-center mt-2 mb-4">Job Openings</h2>
       <div class="mb-0">
         {% for job in jobs %}
@@ -32,8 +42,9 @@
         {% endfor %}
       </div>
       <div class="text-center">
-        <button class="btn btn-primary">Contact Us</button>
+        <a href="mailto:kumargauravibm@gmail.com?subject=Question%20about%20Job%20Opening&body=Hi%20Developers%20Career%2C%0D%0A%0D%0AQuestion%20%3A%20%3CYour%20Question%3E" class="btn btn-primary">Contact Us</a>
       </div>
-    </div>  
+    </div>
+    {% include 'footer.html' %}
   </body>
 </html>
