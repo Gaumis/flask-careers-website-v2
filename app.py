@@ -1,7 +1,7 @@
 # from flask module we are importing Flask class
 from flask import Flask, render_template, jsonify
 from sqlalchemy import text
-from database import engine
+from database import engine, load_job_from_db
 from filters import inr_format
 # object of Flask class is created with __name__ which is equal to __main__
 app = Flask(__name__)
@@ -28,6 +28,13 @@ def hello_world():
 @app.route("/api/jobs")
 def list_jobs():
   return jsonify(load_jobs_from_db())
+
+
+@app.route("/job/<id>")
+def load_specific_job(id):
+  job = load_job_from_db(id)
+  print(job)
+  return jsonify(job)
 
 
 if __name__ == "__main__":
