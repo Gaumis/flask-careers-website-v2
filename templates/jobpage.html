@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ job.title }} Developers Job Opening</title>
+    {% include 'bootstrap.html' %}
+    <style>
+      .container{
+        margin-top:70px !important;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    <div class="container mt-5">
+      {% include 'banner.html' %}
+      <h1 class="text-center mt-4 mb-0 custom-margin">Developers Careers</h1>
+      <h3>{{ job['title'] }}</h3>
+      <p class="lead">{{ job['location'] }}</p>
+      <h4>Responsibities</h4>
+      <ul>
+        {% for item in job['responsibilities'].split("\n") %}
+         <li> {{item}} </li>
+        {% endfor %}
+      </ul>
+      <h4>Requirements</h4>
+      <ol>
+        {% for item in job['requirements'].split("\n") %}
+         <li> {{item}} </li>
+        {% endfor %}
+      </ol>
+      <h4>Salary</h4>
+      <p>{{ job['currency'] }}{{ job['salary'] }}</p>
+    </div>
+    {% include 'footer.html' %}
+  </body>
+</html>
