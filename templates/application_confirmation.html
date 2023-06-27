@@ -2,9 +2,22 @@
 <html>
   <head>
     <title>Application Confirmation</title>
+    {% include 'bootstrap.html' %}
+    <style>
+      .container{
+        margin-top:100px !important;
+        min-height: 50vh !important;
+        overflow: hidden;
+      }
+      
+    </style>
   </head>
   <body>
-    <h3>Hi, {{application['full_name']}}</h3>
-    <p>your application for {{job['title']}} is submitted</p>
+    {% include 'nav.html' %}
+    <div class="container mt-5 text-center">
+      <h3>Hi, {{application['full_name']}}</h3>
+      <p>your application for <b>{{job['title']}}</b> is submitted</p>
+    </div>
+    {% include 'footer.html' %}
   </body>
 </html>

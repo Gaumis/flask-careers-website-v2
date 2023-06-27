@@ -32,6 +32,8 @@ def add_application_to_db(job_id, data):
         "work_experience": data['work_experience'],
         "resume_url": data['resume_url']
       })
+    conn.commit()
+  print("data inserted successfully")
 
 def select_row_from_db(jod_id):
   with engine.connect() as conn:
@@ -40,3 +42,13 @@ def select_row_from_db(jod_id):
     inserted_data = select_result.fetchone()
     print("Inserted data:", inserted_data)
 
+
+add_application_to_db(
+  1, {
+    'full_name': 'Gaurav Mishra',
+    'email': 'gauravmishra@gmail.com',
+    'linkedin_url': 'https://linkedin.com/gaumis',
+    'education': 'Engineer',
+    'work_experience': '3 years as a backend developer',
+    'resume_url': 'https://doc.google.com/gaumis'
+  })
