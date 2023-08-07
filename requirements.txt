@@ -3,3 +3,4 @@ gunicorn
 sqlalchemy
 mypysql
 babel
+python-dotenv
