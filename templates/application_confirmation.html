@@ -4,20 +4,58 @@
     <title>Application Confirmation</title>
     {% include 'bootstrap.html' %}
     <style>
-      .container{
-        margin-top:100px !important;
+      .container {
+        margin-top: 100px !important;
         min-height: 50vh !important;
-        overflow: hidden;
       }
       
+      #banner {
+        width: 100%;
+        object-fit: cover;
+        height: 320px;
+        max-height: 100%;
+      }
+      
+      .banner-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
     </style>
   </head>
   <body>
     {% include 'nav.html' %}
     <div class="container mt-5 text-center">
-      <h3>Hi, {{application['full_name']}}</h3>
-      <p>your application for <b>{{job['title']}}</b> is submitted</p>
+      <h2 class="text-center custom-margin">Developers Career</h2>
+      <img class="img-fluid" id="banner" src="/static/congratulation.jpg" alt="Banner Image">
+      <div class="banner-text">
+        <h3 id="typing-effect">Congratulations, </h3>
+        <h3 id="name-typing"></h3>
+      </div>
+      <h4 class="mt-5">Your application for <b>{{job['title']}}</b> is submitted at Developers Career</h4>
+      <h4>We will get back to you soon!</h4>
     </div>
     {% include 'footer.html' %}
+    <script>
+      const name = "{{ name }}"; // Replace with the actual applicant's name
+      const typingElement = document.getElementById("typing-effect");
+      let index = 0;
+      
+      function typeWriter() {
+        if (index < name.length) {
+          typingElement.textContent += name.charAt(index);
+          index++;
+          setTimeout(typeWriter, 250); // Adjust the typing speed here (in milliseconds)
+        }
+      }
+      
+      typeWriter();
+    </script>
   </body>
 </html>

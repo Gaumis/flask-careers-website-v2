@@ -1,6 +1,8 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
+load_dotenv()
 connection_string = os.environ['CONNECTION_STRING']
 
 engine = create_engine(connection_string)
@@ -42,13 +44,15 @@ def select_row_from_db(jod_id):
     inserted_data = select_result.fetchone()
     print("Inserted data:", inserted_data)
 
+#create a function that fetchs a rows from the applications table for specific id
+def fetch_rows_from_db(id):
+  with engine.connect() as conn:
+    select_statement = text("SELECT * FROM applications WHERE id = :id")
+    select_result = conn.execute(select_statement, {"id": id})
+    inserted_data = select_result.fetchall()
+    print("application data:", inserted_data)
+    #return inserted_data as a list of dictionaries
+    return [dict(zip(select_result.keys(), row)) for row in inserted_data]
 
-add_application_to_db(
-  1, {
-    'full_name': 'Gaurav Mishra',
-    'email': 'gauravmishra@gmail.com',
-    'linkedin_url': 'https://linkedin.com/gaumis',
-    'education': 'Engineer',
-    'work_experience': '3 years as a backend developer',
-    'resume_url': 'https://doc.google.com/gaumis'
-  })
+#select_row_from_db(1)
+#fetch_rows_from_db(14)

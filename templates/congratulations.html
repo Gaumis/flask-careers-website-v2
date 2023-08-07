@@ -1,0 +1,79 @@
+<head>
+    <title>Congratulations</title>
+    <style>
+        #banner {
+            width: 100%;
+            object-fit: cover;
+            height: 320px;
+            max-height: 100%;
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+        }
+
+        .typing-animation {
+            animation: typing 4s steps(30) 1s 1 normal both,
+                blink-caret 0.5s step-end infinite;
+        }
+
+        @keyframes typing {
+            0% {
+                width: 0;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: white;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img class="img-fluid" id="banner" src="/static/banner.jpg" alt="Banner Image">
+    <div class="banner-text typing-animation">
+        Congratulations, <span id="applicant-name"></span>!
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var applicantName = "{{ applicant_name }}";
+            var applicantNameElement = document.getElementById("applicant-name");
+            var chars = applicantName.split("");
+            var i = 0;
+
+            function typeWriter() {
+                if (i < chars.length) {
+                    applicantNameElement.innerHTML += chars[i];
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+
+            typeWriter();
+        });
+    </script>
+</body>
