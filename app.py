@@ -1,29 +1,23 @@
 # from flask module we are importing Flask class
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from sqlalchemy import text
-from database import engine, load_job_from_db, add_application_to_db
+from database import load_jobs_from_db, load_job_from_db, add_user_to_db, get_password_for_user, change_password_for_user
 from filters import inr_format
+import secrets
 # object of Flask class is created with __name__ which is equal to __main__
 app = Flask(__name__)
 app.debug = False
 app.jinja_env.filters['inr_format'] = inr_format
 
+app.secret_key=secrets.token_hex(16)
 
-def load_jobs_from_db():
-  with engine.connect() as conn:
-    result = conn.execute(text("select * from jobs"))
-    jobs = []
-    for row in result:
-      jobs.append(dict(zip(result.keys(), row)))
-  return jobs
-
+image = "/static/banner.jpg"
+all_jobs = load_jobs_from_db()
 
 # @ symbol is decorator
 @app.route("/")
 def hello_world():
-  image = "/static/banner.jpg"
-  all_jobs = load_jobs_from_db()
-  #print(all_jobs)
+  print(all_jobs)
   return render_template('home.html', jobs=all_jobs, image=image)
 
 
@@ -56,13 +50,50 @@ def apply_to_job(id):
                          application=data,
                          job=job, image=image, name=data['full_name'])
 
+# here I'll use AJAX fetch operation.
+@app.route('/changePassword', methods=['POST','GET'])
+def change_password():
+   
+   if request.method == "POST":
+      # data = request.form
+      # current_password=request.form['currentPassword']
+      # change_password=request.form['newPassword']
+      item_data = request.get_json(silent=True)
+      if item_data is None:
+        return jsonify({"message": "Invalid JSON data"}), 400
+      current_password=item_data['currentPassword']
+      change_password=item_data['newPassword']
+      print("enter inside changePassword route")
+      userid=session.get('userid')
+      print(f"item_data : {item_data['currentPassword']}, new passwrod {item_data['newPassword']}")
+      print(userid)
+      mess, status_code = change_password_for_user(userid, current_password, change_password)
+      if status_code==200:
+         return jsonify({"message": "Items added successfully"})
+      else:
+         return jsonify({"message": "fail added successfully"})
+      
+   return render_template('change_password.html')
+    
+
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':  
         # Handle the login form submission
-        username = request.form['username']
-        password = request.form['password']
+        print(f"login route for post")
+        username = request.form['userEmailId']
+        password = request.form['userPassword']
+        print(username)
+        getPassword, name, getUserId, status_code = get_password_for_user(username)
+        print(f"heelo {getPassword}- {name} - {getUserId} - {status_code}")
+        session['username']=username
+        session['userid']=getUserId
+        print(f"{getPassword}- {name} - {getUserId} - {status_code}")
+        if status_code==200 and getPassword == password:
+           return render_template('home.html', userName=name , jobs=all_jobs, image=image)
+        else:
+          return redirect(url_for('login'))
         # Implement your login logic here
         # Check if the username and password are valid
         # If valid, perform the login operation
@@ -79,8 +110,11 @@ def login():
 def register():
     if request.method == 'POST':
         # Handle the register form submission
-        username = request.form['username']
-        password = request.form['password']
+        data = request.form
+        print(f"data for registration : -,{data}")
+        userName = request.form['inputFullName']
+        addedUser = add_user_to_db(data)
+        return render_template('home.html', userName=userName , jobs=all_jobs, image=image)
         # Implement your register logic here
         # Check if the username is available and password is valid
         # If valid, create a new user account
