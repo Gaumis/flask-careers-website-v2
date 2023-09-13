@@ -1,36 +1,38 @@
-<div class="row">
+<div class="row mt-5">
     <div class="col-3">
     </div>
-    <div class="col-6">
-        <form>
+    <div class="col-6 mt-5">
+        <form action="/register", method="POST">
+            <img class="mb-4 img-fluid mx-auto d-block" src="/static/Developers career (1).png" alt="" width="100" height="75">
+            <h1 class="h3 mb-3 fw-normal">Please Register</h1>
             <div class="row mb-3">
                 <div class="col-sm-12">
                     <label for="inputEmail3" class="form-label">Full name</label>
-                    <input type="text" class="form-control" id="inputFullName" placeholder="what is your name?">
+                    <input type="text" class="form-control" name="inputFullName" placeholder="what is your name?">
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-sm-12">
                     <label for="inputEmail3" class="form-label">Email Id</label>
-                    <input type="email" class="form-control" id="inputEmailId" placeholder="Let us your Email id">
+                    <input type="email" class="form-control" name="inputEmailId" placeholder="Let us your Email id">
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-sm-12">
                     <label for="inputEmail3" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Create a password for your account">
+                    <input type="password" class="form-control" name="inputPassword" placeholder="Create a password for your account">
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-sm-12">
                     <label for="inputEmail3" class="form-label">Mobile number</label>
-                    <input type="text" class="form-control" id="inputMobileNumber" placeholder="Enter your Mobile number">
+                    <input type="text" class="form-control" name="inputMobileNumber" placeholder="Enter your Mobile number">
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-sm-12">
                     <label for="inputExperience" class="form-label">Year of Experience</label>
-                    <select class="form-select" id="inputExperience">
+                    <select class="form-select" name="inputExperience">
                         <option value="0">Less than 1 year</option>
                         <option value="1">1 year</option>
                         <option value="2">2 years</option>
@@ -47,6 +49,9 @@
             </div>            
             <button type="submit" class="btn btn-primary">Register now</button>
         </form>
+        {% if message %}
+            <p class="text-center mt-1 text-danger">{{message}}, Try Again</p>
+        {% endif %}
     </div>
     <div class="col-3">
     </div>

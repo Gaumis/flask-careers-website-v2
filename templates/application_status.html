@@ -2,24 +2,22 @@
 <html>
 
 <head>
-    <title>Login</title>
+    <title>Application Status</title>
     {% include 'bootstrap.html' %}
     <style>
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
+        .custom-margin {
+        margin-top: 120px !important;
+      }
     </style>
 </head>
 <body>
     {% include 'nav.html' %}
     <div class="container">
         <div>
-            {% include 'login_template.html' %}
+            {% include 'application_status_template.html' %}
         </div>
     </div>
     {% include 'footer.html' %}
 </body>
+
 </html>

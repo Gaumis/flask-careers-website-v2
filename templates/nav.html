@@ -1,15 +1,33 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-body-tertiary shadow">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <img src="/static/logo.svg" alt="Bootstrap" width="30" height="24">
-    </a>
-    <a class="navbar-brand" href="/" style="color:black;">Developers Career</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
-      <a  href="/register" class="btn btn-outline-primary mx-2" onclick="signInWithGoogle()">Register</a>
-      <a href="/login" class="btn btn-outline-primary mx-2" onclick="signInWithGoogle()">Login</a>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/static/Developers career (1).png" alt="Developers Career" width="40" height="30">
+        </a>
+        <a class="navbar-brand" href="{% if isAdmin %}/ADMIN.html{% else %}/{% endif %}" style="color:black;">Developers Career</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+            {% if userName %}
+            <div class="mx-2 d-flex align-items-center">
+                <div class="nav-item dropdown">
+                    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="profileDropdown"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ userName }}!
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item" href="/applicationStatus">Application Status</a>
+                        <a class="dropdown-item" href="/changePassword">Change Password</a>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <a href="/register" class="btn btn-outline-primary mx-2" onclick="signInWithGoogle()">Register</a>
+            <a href="/login" class="btn btn-outline-primary mx-2" onclick="signInWithGoogle()">Login</a>
+            {% endif %}
+        </div>
     </div>
-  </div>
 </nav>

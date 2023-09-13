@@ -1,28 +1,30 @@
-<h4>Application Form</h4>
-<form action="/job/{{job['id']}}/apply", method="post">
-  <div class="mb-2">
-  <label>Full Name</label><br>
-  <input type="text" name="full_name" placeholder="Gaurav Mishra">
-  </div>
-  <div class="mb-2">
-  <label>Email</label><br>
-  <input type="email" name="email" placeholder="gauravmishra@gmail.com">
-  </div>
-  <div class="mb-2">
-  <label>LinkedIN</label><br>
-  <input type="url" name="linkedin_url" placeholder="https://www.linkedin.com/gaumis">
-  </div>
-  <div class="mb-2">
-  <label>Education</label><br>
-  <textarea name="education"></textarea>
-  </div>
-  <div class="mb-2">
-  <label>Work Experience</label><br>
-  <textarea name="work_experience"></textarea>
-  </div>
-  <div class="mb-2">
-  <label>Resume URL</label><br>
-  <input type="url" name="resume_url" placeholder="https://www.googledoc.com/userparty">
-  </div>
-  <input type="submit" name="submit">
-</form>
+<div class="application-form">
+    <h4>Application Form, {{UserName}}</h4>
+    <form action="/job/{{job['id']}}/apply" method="post">
+        <div class="form-group mt-1">
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Gaurav Mishra" value="{{ userName or '' }}">
+        </div>
+        <div class="form-group mt-1">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="gauravmishra@gmail.com" value="{{ userEmail or '' }}">
+        </div>
+        <div class="form-group mt-1">
+            <label for="linkedin_url">LinkedIn</label>
+            <input type="url" id="linkedin_url" name="linkedin_url" class="form-control" placeholder="https://www.linkedin.com/gaumis">
+        </div>
+        <div class="form-group mt-1">
+            <label for="education">Education</label>
+            <textarea id="education" name="education" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-group mt-1">
+            <label for="work_experience">Work Experience</label>
+            <textarea id="work_experience" name="work_experience" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-group mt-1">
+            <label for="resume_url">Resume URL</label>
+            <input type="url" id="resume_url" name="resume_url" class="form-control" placeholder="https://www.googledoc.com/userparty">
+        </div>
+        <button type="submit" class="btn btn-primary mt-1">Submit</button>
+    </form>
+</div>
