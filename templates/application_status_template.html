@@ -1,0 +1,32 @@
+<div class="container mt-5 custom-margin">
+    <h2 class="text-center mt-5 mb-4">Application List</h2>
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>#</th> <!-- Serial Number Column -->
+                <th>Job Title</th>
+                <th>Location</th>
+                <th>Salary</th>
+                <th>Application Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if applications %}
+                {% for index, application in applications %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ application[0] }}</td>
+                    <td>{{ application[1] }}</td>
+                    <td>{{ application[3] }}{{ application[2] }}</td>
+                    <td>{{ application[4] }}</td>
+                    <td>{{ application[5] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <h3 class="text-center mt-5">You have not yet applied for any jobs, pls apply</h3>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+

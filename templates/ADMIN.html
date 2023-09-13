@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    {% include 'bootstrap.html' %} <!-- Include Bootstrap CSS -->
+    <style>
+        /* Add your custom CSS styles here */
+        .applications {
+            display: none;
+            margin-top: 10px;
+        }
+        .job-header {
+            display: flex;
+            justify-content: space-between; /* Space out title and button */
+            align-items: center; /* Center align items vertically */
+            margin-bottom: 10px;
+        }
+        .job-title {
+            font-size: 24px;
+            margin: 0;
+        }
+        .job-location {
+            font-size: 16px;
+            color: #666;
+            margin: 0;
+        }
+        .view-btn {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .view-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    {% include 'nav.html' %}
+    <div class="container mt-5">
+        <h1 class="text-center mt-5 mb-4">Job Applications Dashboard</h1>
+        
+        {% for job in jobs %}
+            <div class="card mt-5 mb-5">
+                <div class="card-header job-header">
+                    <div>
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-location">{{ job.location }}</div>
+                    </div>
+                    <button class="view-btn" id="viewApplications{{ job.id }}" value="{{ job.id }}">View Applications</button>
+                </div>
+                <div id="resultantTable{{ job.id }}"></div>
+            </div>
+        {% endfor %}
+    </div>
+    {% include 'footer.html' %} <!-- Include Footer -->
+    <script>
+        const viewButtons = document.querySelectorAll(".view-btn");
+        viewButtons.forEach(button => {
+            button.addEventListener("click", async function(event) {
+                event.preventDefault();
+                const idValue = button.value;
+                try {
+                    const response = await fetch(`/gaumisAPI/getAllApplication/${idValue}`);
+                    const data = await response.json();
+                    const tableHtml = generateTable(data);
+                    const addItemResult = document.getElementById("resultantTable" + idValue);
+                    addItemResult.innerHTML = tableHtml;
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        function generateTable(data) {
+            let tableHtml = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>LinkedIn URL</th>
+                            <th>Application Status</th>
+                            <th>Take Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            data.forEach(entry => {
+                tableHtml += `
+                    <tr>
+                        <td>${entry.full_name}</td>
+                        <td><a href="${entry.linkedin_url}" target="_blank">${entry.linkedin_url}</a></td>
+                        <td>${entry.status}</td>
+                        <td><a href="/${entry.job_id}/${entry.id}">View Applications</a></td>
+                    </tr>`;
+            });
+            
+            tableHtml += `
+                    </tbody>
+                </table>`;
+            
+            return tableHtml;
+        }
+    </script>
+</body>
+</html>

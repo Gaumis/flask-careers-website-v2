@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Candidate and Job Details</title>
+    {% include 'bootstrap.html' %} <!-- Include Bootstrap CSS -->
+    <style>
+        /* Add your custom CSS styles here */
+        .details-container {
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .custom-margin {
+            margin-top: 120px !important;
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            /* Align its children in a column */
+        }
+
+        .status-select {
+            flex: 1;
+            margin-right: 10px;
+            width: 100%;
+            /* Set the width to 100% to fill available space */
+        }
+
+        .status-button {
+            flex-shrink: 0;
+        }
+
+        .custom-select-with-icon {
+            border-color: black;
+            width: 220px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('/static/icons8-triangle-arrow-50.png'); /* Replace with the path to your triangle icon image */
+            background-position: right 10px center;
+            background-repeat: no-repeat;
+            padding-right: 30px; /* Adjust the padding to make space for the icon */
+            background-size: 15px;
+        }
+
+        .custom-select-with-icon::-ms-expand {
+            display: none;
+        }
+
+    </style>
+</head>
+
+<body>
+    {% include 'nav.html' %}
+    <div class="container mt-5 custom-margin">
+        <div class="details-container">
+            <h2 class="text-center mb-3">Application No: <p id="application_value">{{ candidate['id'] }}</p></h2>
+            <div class="row">
+                <div class="col-md-9">
+                    <div>
+                        <h3>{{ candidate['job_id'] }}, {{ candidate['title'] }}</h3>
+                        <h5>{{ candidate['location'] }}</h5>
+                    </div>
+                    <h3>Candidate Details</h3>
+                    <div>
+                        <strong>Full Name:</strong> {{ candidate['full_name'] }}<br>
+                        <strong>LinkedIn URL:</strong> <a href="https://linkedin.com/bimla" target="_blank">{{
+                            candidate['linkedin_url'] }}</a><br>
+                        <strong>Education:</strong> {{ candidate['education'] }}<br>
+                        <strong>Work Experience:</strong> {{ candidate['work_experience'] }}<br>
+                        <strong>Resume URL:</strong> <a href="https://doc.google.com/bimla" target="_blank">{{
+                            candidate['resume_url'] }}</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="status-container">
+                        <select id="status" name="status" class="form-control status-select mb-3 custom-select-with-icon">
+                            <option value="Under Review" {% if candidate['status']=='Under Review' %}selected{% endif
+                                %}>Under Review</option>
+                            <option value="Interview Scheduled" {% if candidate['status']=='Interview Scheduled'
+                                %}selected{% endif %}>Interview Scheduled</option>
+                            <option value="Interviewed" {% if candidate['status']=='Interviewed' %}selected{% endif %}>
+                                Interviewed</option>
+                            <option value="Offer Extended" {% if candidate['status']=='Offer Extended' %}selected{%
+                                endif %}>Offer Extended</option>
+                            <option value="Rejected" {% if candidate['status']=='Rejected' %}selected{% endif %}>
+                                Rejected</option>
+                            <option value="On Hold" {% if candidate['status']=='On Hold' %}selected{% endif %}>On Hold
+                            </option>
+                            <option value="Hired" {% if candidate['status']=='Hired' %}selected{% endif %}>Hired
+                            </option>
+                        </select>
+                        <button id="changeStatusBtn" class="btn btn-primary status-button">Change Status</button>
+                        <div class="container text-center mt-3" id="addItemResult"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="/job-details/4" class="btn btn-primary mt-3">View Job Details</a>
+    </div>
+    {% include 'footer.html' %} <!-- Include Footer -->
+    <script>
+        document.getElementById("changeStatusBtn").addEventListener("click", function () {
+            const selectedStatus = document.getElementById("status").value;
+            const applicationValue = document.getElementById("application_value").textContent;
+            console.log(selectedStatus, applicationValue)
+            const data1 = {
+                "application_id": applicationValue,
+                "status": selectedStatus
+            }
+            fetch(`/takeAction`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data1)
+            }).then(response => response.json())
+                .then(data => {
+                    const addItemResult = document.getElementById("addItemResult");
+                    addItemResult.innerHTML = JSON.stringify(data['message']);
+                    console.log(data);
+                }).catch(error => console.log(error));
+
+            // Perform AJAX request to update status in the database
+            // You can use fetch() or other AJAX libraries
+            // After updating status, you can show a success message or reload the page
+        });
+    </script>
+</body>
+
+</html>

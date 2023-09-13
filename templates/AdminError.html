@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Error</title>
+    {% include 'bootstrap.html' %} <!-- Include Bootstrap CSS -->
+    <style>
+        /* Add your custom CSS styles here */
+        .error-container {
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        .custom-margin {
+            margin-top: 150px !important;
+            margin-bottom: 120px !important;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'nav.html' %}
+    <div class="container mt-5 custom-margin">
+        <div class="error-container">
+            <h2 class="text-center mb-3">Access Denied</h2>
+            <p class="text-center">Sorry, you do not have permission to access this page.</p>
+            <p class="text-center">Please contact the administrator for assistance.</p>
+        </div>
+    </div>
+    {% include 'footer.html' %} <!-- Include Footer -->
+</body>
+
+</html>

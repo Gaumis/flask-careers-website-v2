@@ -1,97 +1,8 @@
 import os
 from dotenv import load_dotenv
-import mysql.connector
+from sqlalchemy import create_engine, text
 
 load_dotenv()
-print(os.getenv("HOST"),os.getenv("DATABASE"),os.getenv("USER_NAME"),os.getenv("PASSWORD"))
-
-cnx = mysql.connector.connect(
-host=os.getenv("HOST"),
-database=os.getenv("DATABASE"),
-user=os.getenv("USER_NAME"),
-password=os.getenv("PASSWORD")
-)
-
-cursor = cnx.cursor()
-# cursor.execute("SELECT * FROM jobs")
-# result = cursor.fetchall()
-# print(result)
-print("my sql connector:  connection is successful")
-
-def load_jobs_from_db():
-  cursor.execute("SELECT * FROM jobs")
-  jobs = cursor.fetchall()
-  if jobs:
-      column_names = [desc[0] for desc in cursor.description]
-      job_list = [dict(zip(column_names, job)) for job in jobs]
-      return job_list
-  else:
-      return None
-
-
-def load_job_from_db(id):
-  cursor.execute(f"select * from jobs where id={id}")
-  job = cursor.fetchone()
-  print(job)
-  if job:
-    column_names = [desc[0] for desc in cursor.description]
-    print(column_names)
-    return dict(zip(column_names, job))
-  else:
-    return None
-
-def check_password(user):
-  cursor.execute("select * from user ")
-  data = cursor.fetchall()
-  print(data)
-
-
-def get_password_for_user(username):
-  try: 
-    print(f"username is {username}")
-    cursor.execute(f"select userPassword, userFullName, userId from users where userEmailId ='{username}'")
-    final_result = cursor.fetchone()
-    print(final_result)
-    print(f"final result, {final_result[0]}")
-    return final_result[0], final_result[1], final_result[2], 200
-  
-  except Exception as e:
-    print(f"User doesn't exist")
-    return {"message":f"{username} User Not Found!"}, 404
-
-
-def change_password_for_user(userid, current_password, change_password):
-  try:
-    while cursor.nextset():
-      pass
-    print(f"User id is {userid}")
-    print(type(userid))
-    cursor.execute(f"select userPassword from users where userId={userid}")
-    result = cursor.fetchall()
-    print(f"result is {result}")
-    db_password=result[0][0]
-    print(f"password is : {db_password}")
-    if current_password==db_password:
-      cursor.execute(f"update users set userPassword='{change_password}' where userId={userid}")
-      cnx.commit()
-      cnx.close()
-      return {"message":"password is successfully changed"}, 200
-    else:
-      return {"message":"Current Password is not correct, Try Again!"}, 400 
-
-  except Exception as e:
-    print(e)
-    print("hi")
-    return {"message":"Exception occured!"},401
-  
-def add_user_to_db(data):
-  cursor.execute(f"INSERT INTO users (userFullName, userEmailId, userPassword, userMobileNumber, userExperience) values ({data['inputFullName']}, {data['inputEmailId']}, {data['inputPassword']}, {data['inputMobileNumber']}, {data['inputExperience']})")
-  result=cursor.fetchall()
-  print(result)
-  cnx.commit()
-  print("data inserted successfully")
-
-'''
 connection_string = os.environ['CONNECTION_STRING']
 
 engine = create_engine(connection_string)
@@ -106,7 +17,58 @@ def load_job_from_db(id):
   else:
     return None
 
+#return [dict(zip(select_result.keys(), row)) for row in inserted_data]
 
+def get_candidate_details_with_jobs(application_id):
+  with engine.connect() as conn:
+    statement = text("SELECT app.id, app.job_id ,j.title, j.location, app.full_name, app.linkedin_url, app.education, app.work_experience, app.resume_url, app.status FROM applications app JOIN jobs j ON app.job_id = j.id where app.id=:application_id")
+    result = conn.execute(statement, {"application_id": application_id})
+    final_result = result.fetchall()
+    print(final_result)
+    print(f"Result is : {result.keys}")
+    if final_result:
+      return [dict(zip(result.keys(),row)) for row in final_result]
+    else:
+      return None
+
+
+def take_action_db(app_id,status):
+  try:
+    with engine.connect() as conn:
+      statement = text("update applications set status=:status where id=:app_id")
+      result = conn.execute(statement, {"status": status,
+                                        "app_id":app_id})
+      conn.commit()
+    return {"message": "Application status is successfully changed"}, 200
+  except Exception as e:
+    print(f"Database error: {e}")
+    return {"error": "Failed to update application status"}, 500
+  
+
+def load_job_application(job_id, application_id):
+  with engine.connect() as conn:
+    statement = text("select * from applications app JOIN jobs j ON app.job_id=j.id where app.id=:application_id and j.id=:job_id")
+    result = conn.execute(statement, {"application_id":application_id,
+                                      "job_id":job_id})
+    final_result=result.fetchall()
+    print(result.keys)
+    if final_result:
+      return dict(zip(result.keys(),final_result))
+    else:
+      return None
+
+def check_user_in_db(userEmail):
+  with engine.connect() as conn:
+    statement = text(
+      "select userId from users where userEmailId = :userEmail"
+    )
+    result = conn.execute(statement, {"userEmail":userEmail})
+    final_result=result.fetchall()
+    userExist=len(final_result)
+    if userExist == 0:
+      return True
+    else:
+      return False
 
 
 def add_user_to_db(data):
@@ -126,21 +88,92 @@ def add_user_to_db(data):
   print("data inserted successfully")
 
 
+def change_password_for_user(userid, current_password, change_password):
+  print("entered change password database")
+  try:
+    with engine.connect() as conn:
+      statement = text(
+      "select userPassword from users where userId = :userid"
+      )
+      result = conn.execute(statement, {"userid":userid})
+      final_result = result.fetchall()
+      print(f"final result is {final_result}")
+      db_password=final_result[0][0]
+      print(f"password is : {db_password}")
+      if current_password==db_password:
+        print("current password and db password is same")
+        statement = text(
+          "update users set userPassword = :change_password where userId = :userid"
+        )
+        result = conn.execute(statement, {"userid":userid, "change_password":change_password})
+        print("current password and db password is close")
+        conn.commit()
+        conn.close()
+        return {"message":"password is successfully changed"}, 200
+      else:
+        return {"message":"Current Password is not correct, Try Again!"}, 400
+      
+  except Exception as e:
+    return {"message":"Exception occured!"},401
+
+def db_get_all_application(id):
+  try:
+    with engine.connect() as conn:
+      statement = text("select * from applications where job_id = :id")
+      result = conn.execute(statement, {"id": id})
+      final_result = result.fetchall()
+      print(f"{final_result} and type is {type(final_result)}")
+      return [dict(zip(result.keys(), row)) for row in final_result]
+
+  except Exception as e:
+    print(e)
+    return {"message":f"No Applications found with job id {id}"}
+
 def get_password_for_user(username):
   try:
-      with engine.connect() as conn:
-        statement = text("select userPassword, userFullName from users where userEmailId = :username")
-        result = conn.execute(statement, {"username":username})
-        final_result = result.fetchone()
-        print(f"final result, {final_result[0]}")
-        return final_result[0], final_result[1], 200
+    with engine.connect() as conn:
+      statement = text("select userPassword, userFullName, userId, role from users where userEmailId = :username")
+      result = conn.execute(statement, {"username":username})
+      final_result = result.fetchone()
+      print(final_result)
+      print(f"final result, {final_result[0]}")
+      return final_result[0], final_result[1], final_result[2], final_result[3], 200
       
   except Exception as e:
     print(f"User doesn't exist")
     return {"message":"User Not Found!"}, 404
 
+def check_if_already_applied(id, userEmail):
+  with engine.connect() as conn:
+    statement = text(
+      "select id from applications where job_id = :id and email = :userEmail"
+    )
+    result = conn.execute(
+      statement, {"id":id,
+                  "userEmail":userEmail}
+    )
+    final_result = result.fetchall()
+    userExist=len(final_result)
+    print(userExist)
+    if userExist:
+      return False
+    else:
+      return True
 
-
+def get_applied_applications(userEmail):
+  with engine.connect() as conn:
+    statement = text(
+      "SELECT j.title, j.location, j.salary, j.currency, app.created_at, app.status FROM applications app JOIN jobs j ON app.job_id = j.id where app.email=:userEmail"
+    )
+    result = conn.execute(
+      statement, {"userEmail":userEmail}
+    )
+    final_result = result.fetchall()
+    print(f"Final result : {final_result}")
+    if final_result:
+      return final_result
+    else:
+      return None
 
 def add_application_to_db(job_id, data):
   with engine.connect() as conn:
@@ -176,11 +209,19 @@ def fetch_rows_from_db(id):
     print("application data:", inserted_data)
     #return inserted_data as a list of dictionaries
     return [dict(zip(select_result.keys(), row)) for row in inserted_data]
+  
+# get_password_for_user("kumargaurav1527@gmail.com")
+# change_password_for_user(1,"password4","password5")
 
 #select_row_from_db(1)
 #fetch_rows_from_db(14)
 # get_password_for_user("kumargaurav1527@gil.com")
-check_password("gaurav")
+# check_password("gaurav")
+# check_user_in_db("kumargaurav1527@gl.com")
+# check_if_already_applied(2, 'bimladevi@gmail.com')
+# get_applied_applications('bimladevi@gmail.com')
+# ans = db_get_all_application(1)
+# print(f"Answer is {ans} and the type is {type(ans)}")
 '''
 # print(load_job_from_db(1))
 test_data = {
@@ -195,4 +236,9 @@ test_data = {
 
 # get_password_for_user("kumargaurav1527@gmail.com")
 
-change_password_for_user(8,"test","test1")
+
+change_password_for_user(8,"test","test1")'''
+# print(get_candidate_details_with_jobs(101))
+# print(load_job_application(5,101))
+# print(fetch_rows_from_db(101))
+take_action_db(119, 'Interviewed')
