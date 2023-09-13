@@ -1,4 +1,4 @@
-# from flask module we are importing Flask class
+# from Flask module we are importing Flask class
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from sqlalchemy import text
 from database import engine, load_job_from_db, add_application_to_db, get_password_for_user, change_password_for_user, add_user_to_db, check_user_in_db, check_if_already_applied, get_applied_applications, db_get_all_application, get_candidate_details_with_jobs, take_action_db
